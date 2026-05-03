@@ -1,0 +1,72 @@
+<%- include('../partials/head') %>
+<div class="app-shell">
+  <%- include('../partials/sidebar') %>
+  <div class="main-content">
+    <div class="topbar">
+      <div class="topbar-title"><%= city.name %></div>
+      <div class="topbar-actions">
+        <form action="/cities/<%= city._id %>/bucket" method="POST">
+          <button class="btn btn-sm <%= inBucket ? 'btn-primary' : 'btn-ghost' %>">
+            <%= inBucket ? '★ In Bucket List' : '☆ Add to Bucket List' %>
+          </button>
+        </form>
+        <% if (user.role === 'admin') { %>
+          <a href="/cities/<%= city._id %>/edit" class="btn btn-ghost btn-sm">✏️ Edit</a>
+          <form action="/cities/<%= city._id %>?_method=DELETE" method="POST"
+                onsubmit="return confirm('Delete this city?')">
+            <button class="btn btn-danger btn-sm">🗑 Delete</button>
+          </form>
+        <% } %>
+        <a href="/cities" class="btn btn-ghost btn-sm">← Back</a>
+      </div>
+    </div>
+    <div class="page">
+      <div class="card" style="margin-bottom:20px">
+        <% const cityImage = city.image || '/assets/default-city.jpg'; %>
+        <div style="margin-bottom:20px;border-radius:8px;overflow:hidden;max-height:800px">
+          <img src="<%= cityImage %>" style="width:100%;height:auto;display:block;object-fit:cover" 
+               onerror="this.src='/assets/default-city.jpg'" />
+        </div>
+        <h2 style="font-size:24px;font-weight:800;margin-bottom:16px">🏙️ <%= city.name %></h2>
+        <div class="detail-grid">
+          <div class="detail-item">
+            <label>🌍 Country</label>
+            <p><a href="/countries/<%= city.country?._id %>"><%= city.country?.name || '—' %></a> (<%= city.country?.code || '—' %>)</p>
+          </div>
+          <div class="detail-item">
+            <label>👥 Population</label>
+            <p><%= city.population ? city.population.toLocaleString() : 'Unknown' %></p>
+          </div>
+          <div class="detail-item">
+            <label>🗣 Language</label>
+            <p><%= city.language || 'Unknown' %></p>
+          </div>
+          <div class="detail-item">
+            <label>💱 Currency</label>
+            <p><%= city.currency || 'Unknown' %></p>
+          </div>
+          <div class="detail-item">
+            <label>🕐 Timezone</label>
+            <p><%= city.timezone || 'Unknown' %></p>
+          </div>
+          <div class="detail-item">
+            <label>⭐ Saved by</label>
+            <p><%= city.visitors?.length || 0 %> traveller(s)</p>
+          </div>
+        </div>
+      </div>
+
+      <% if (city.visitors && city.visitors.length) { %>
+      <div class="card">
+        <div class="card-title" style="margin-bottom:14px">Travellers who saved this city</div>
+        <div style="display:flex;flex-wrap:wrap;gap:8px">
+          <% city.visitors.forEach(v => { %>
+            <span class="badge b-cyan">👤 <%= v.username %></span>
+          <% }) %>
+        </div>
+      </div>
+      <% } %>
+    </div>
+  </div>
+</div>
+<%- include('../partials/foot') %>

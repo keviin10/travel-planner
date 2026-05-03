@@ -1,0 +1,72 @@
+<%- include('../partials/head') %>
+<div class="app-shell">
+  <%- include('../partials/sidebar') %>
+  <div class="main-content">
+    <div class="topbar">
+      <div class="topbar-title">Countries</div>
+      <% if (user.role === 'admin') { %>
+        <a href="/countries/new" class="btn btn-primary">+ New Country</a>
+      <% } %>
+    </div>
+    <div class="page">
+      <div class="card">
+        <form class="search-bar" method="GET" action="/countries">
+          <input type="text" name="search" placeholder="🔍 Search countries…" value="<%= search||'' %>" />
+          <button class="btn btn-primary" type="submit">Search</button>
+          <% if (search) { %><a href="/countries" class="btn btn-ghost">Clear</a><% } %>
+        </form>
+        
+        <% if (!countries.length) { %>
+          <div class="empty"><div class="ei">🌍</div><p>No countries found.</p></div>
+        <% } else { %>
+          <div class="table-wrap">
+            <table style="width:100%">
+              <thead>
+                <tr>
+                  <th style="width:50%">Country</th>
+                  <th style="width:20%">Code</th>
+                  <th style="width:30%">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% countries.forEach(c => { 
+                  const countryImage = c.image || '/assets/default-country.jpg';
+                %>
+                  <tr>
+                    <td style="vertical-align:middle;padding:12px 8px">
+                      <div style="display:flex;align-items:center;gap:12px">
+                        <img src="<%= countryImage %>" 
+                             style="width:80px;height:80px;border-radius:8px;object-fit:cover" 
+                             onerror="this.src='/assets/default-country.jpg'" />
+                        <a href="/countries/<%= c._id %>" style="font-weight:600;font-size:15px"> <%= c.name %></a>
+                      </div>
+                    </td>
+                    <td style="vertical-align:middle">
+                      <span class="badge b-cyan" style="background:rgba(6,182,212,.15);color:#22d3ee">
+                        <%= c.code || '—' %>
+                      </span>
+                    </td>
+                    <td style="vertical-align:middle;padding:12px 8px">
+                      <div style="display:flex;gap:8px;align-items:center;flex-wrap:nowrap">
+                        <% if (user.role === 'admin') { %>
+                          <a href="/countries/<%= c._id %>/edit" class="btn btn-ghost btn-xs" style="margin:0;white-space:nowrap">✏️ Edit</a>
+                          <form action="/countries/<%= c._id %>?_method=DELETE" method="POST" style="margin:0;display:inline"
+                                onsubmit="return confirm('Delete <%= c.name %>?')">
+                            <button class="btn btn-danger btn-xs" style="margin:0;white-space:nowrap">🗑 Delete</button>
+                          </form>
+                        <% } else { %>
+                          <a href="/countries/<%= c._id %>" class="btn btn-primary btn-xs" style="margin:0;white-space:nowrap">View Details</a>
+                        <% } %>
+                      </div>
+                    </td>
+                  </tr>
+                <% }) %>
+              </tbody>
+            </table>
+          </div>
+        <% } %>
+      </div>
+    </div>
+  </div>
+</div>
+<%- include('../partials/foot') %>

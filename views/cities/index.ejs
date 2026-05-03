@@ -1,0 +1,90 @@
+<%- include('../partials/head') %>
+<div class="app-shell">
+  <%- include('../partials/sidebar') %>
+  <div class="main-content">
+    <div class="topbar">
+      <div class="topbar-title">Cities</div>
+      <% if (user.role === 'admin') { %>
+        <a href="/cities/new" class="btn btn-primary">+ New City</a>
+      <% } %>
+    </div>
+    <div class="page">
+      <div class="card">
+        <form class="search-bar" method="GET" action="/cities">
+          <input type="text" name="search" placeholder="🔍 Search cities…" value="<%= search||'' %>" />
+          <select name="country">
+            <option value="">All Countries</option>
+            <% countries.forEach(c => { %>
+              <option value="<%= c._id %>" <%= country===c._id.toString()?'selected':'' %>><%= c.name %></option>
+            <% }) %>
+          </select>
+          <button class="btn btn-ghost" type="submit">Filter</button>
+          <% if (search||country) { %><a href="/cities" class="btn btn-ghost">Clear</a><% } %>
+        </form>
+
+        <% if (!cities.length) { %>
+          <div class="empty"><div class="ei">🏙️</div><p>No cities found.</p></div>
+        <% } else { %>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>City</th>
+                  <th>Country</th>
+                  <th>Population</th>
+                  <th>Language</th>
+                  <th>Currency</th>
+                  <th>Saved by</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% cities.forEach(c => { 
+                  const cityImage = c.image || '/assets/default-city.jpg';
+                %>
+                <tr>
+                  <td style="display:flex;align-items:center;gap:8px;padding:12px 0">
+                    <img src="<%= cityImage %>" style="width:80px;height:80px;border-radius:8px;object-fit:cover" 
+                         onerror="this.src='/assets/default-city.jpg'" />
+                    <a href="/cities/<%= c._id %>" style="font-weight:600"><%= c.name %></a>
+                  </td>
+                  <td style="color:var(--text3);vertical-align:middle"><%= c.country?.name || '—' %></td>
+                  <td style="color:var(--text3);vertical-align:middle"><%= c.population ? c.population.toLocaleString() : '—' %></td>
+                  <td style="color:var(--text3);vertical-align:middle"><%= c.language || '—' %></td>
+                  <td style="color:var(--text3);vertical-align:middle"><%= c.currency || '—' %></td>
+                  <td style="vertical-align:middle">
+                    <span class="badge b-<%= bucketIds.includes(c._id.toString())?'purple':'gray' %>">
+                      <%= c.visitors?.length || 0 %> ⭐
+                    </span>
+                  </td>
+                  <td style="vertical-align:middle;padding:12px 8px">
+                    <div style="display:flex;gap:6px;align-items:center;flex-wrap:nowrap">
+                      <% if (bucketIds.includes(c._id.toString())) { %>
+                        <form action="/cities/<%= c._id %>/bucket" method="POST" style="margin:0">
+                          <button class="btn btn-xs" style="background:rgba(124,106,247,.2);color:var(--accent-h);margin:0;white-space:nowrap">★ Saved</button>
+                        </form>
+                      <% } else { %>
+                        <form action="/cities/<%= c._id %>/bucket" method="POST" style="margin:0">
+                          <button class="btn btn-xs btn-ghost" style="margin:0;white-space:nowrap">☆ Save</button>
+                        </form>
+                      <% } %>
+                      <% if (user.role === 'admin') { %>
+                        <a href="/cities/<%= c._id %>/edit" class="btn btn-ghost btn-xs" style="margin:0;white-space:nowrap">Edit</a>
+                        <form action="/cities/<%= c._id %>?_method=DELETE" method="POST" style="margin:0"
+                              onsubmit="return confirm('Delete <%= c.name %>?')">
+                          <button class="btn btn-danger btn-xs" style="margin:0;white-space:nowrap">Del</button>
+                        </form>
+                      <% } %>
+                    </div>
+                   </td>
+                </tr>
+                <% }) %>
+              </tbody>
+            </table>
+          </div>
+        <% } %>
+      </div>
+    </div>
+  </div>
+</div>
+<%- include('../partials/foot') %>

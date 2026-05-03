@@ -1,0 +1,52 @@
+<%- include('../partials/head') %>
+<div class="app-shell">
+  <%- include('../partials/sidebar') %>
+  <div class="main-content">
+    <div class="topbar">
+      <div class="topbar-title">All Themes</div>
+      <div style="display:flex;gap:10px">
+        <% if (user && user.role === 'admin') { %>
+          <a href="/themes/new" class="btn btn-primary">+ New Theme</a>
+        <% } %>
+        <a href="/themes/landing" class="btn btn-ghost btn-sm">← Landing</a>
+      </div>
+    </div>
+    <div class="page">
+      <% if (!themes.length) { %>
+        <div class="empty">
+          <div class="ei">🎨</div>
+          <p>No themes yet.<% if (user && user.role === 'admin') { %> <a href="/themes/new">Create one!</a><% } %></p>
+        </div>
+      <% } else { %>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px">
+          <% themes.forEach(theme => { %>
+            <div style="background:var(--bg2);border:1px solid var(--border);border-radius:20px;overflow:hidden;transition:transform 0.3s,box-shadow 0.3s"
+                 onmouseover="this.style.transform='translateY(-6px)';this.style.boxShadow='0 20px 40px rgba(0,0,0,0.1)'"
+                 onmouseout="this.style.transform='';this.style.boxShadow=''">
+              <img src="<%= theme.image || '/assets/default-theme.jpg' %>" alt="<%= theme.name %>"
+                   style="width:100%;height:200px;object-fit:cover" />
+              <div style="padding:20px">
+                <h3 style="font-size:18px;font-weight:800;margin-bottom:4px"><%= theme.title %></h3>
+                <p style="color:var(--accent);font-size:13px;font-weight:600;margin-bottom:8px"><%= theme.subtitle %></p>
+                <p style="color:var(--text3);font-size:13px;margin-bottom:16px;line-height:1.5">
+                  <%= theme.description.substring(0,100) %><%= theme.description.length > 100 ? '...' : '' %>
+                </p>
+                <div style="display:flex;gap:8px;flex-wrap:wrap">
+                  <a href="/themes/<%= theme.slug %>" class="btn btn-primary btn-sm">Explore →</a>
+                  <% if (user && user.role === 'admin') { %>
+                    <a href="/themes/<%= theme._id %>/edit" class="btn btn-ghost btn-sm">Edit</a>
+                    <form action="/themes/<%= theme._id %>?_method=DELETE" method="POST"
+                          style="display:inline" onsubmit="return confirm('Delete this theme?')">
+                      <button class="btn btn-danger btn-sm">Delete</button>
+                    </form>
+                  <% } %>
+                </div>
+              </div>
+            </div>
+          <% }) %>
+        </div>
+      <% } %>
+    </div>
+  </div>
+</div>
+<%- include('../partials/foot') %>

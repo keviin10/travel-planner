@@ -1,0 +1,63 @@
+<%- include('../partials/head') %>
+<div class="app-shell">
+  <%- include('../partials/sidebar') %>
+  <div class="main-content">
+    <div class="topbar">
+      <div class="topbar-title">My Trips</div>
+      <a href="/trips/new" class="btn btn-primary">+ New Trip</a>
+    </div>
+    <div class="page">
+      <div class="card">
+        <form class="search-bar" method="GET" action="/trips">
+          <input type="text" name="search" placeholder="🔍 Search trips…" value="<%= search||'' %>" />
+          <select name="status">
+            <option value="">All Statuses</option>
+            <% statuses.forEach(s => { %>
+              <option value="<%= s %>" <%= status===s?'selected':'' %> style="text-transform:capitalize"><%= s %></option>
+            <% }) %>
+          </select>
+          <button class="btn btn-ghost" type="submit">Filter</button>
+          <% if (search||status) { %><a href="/trips" class="btn btn-ghost">Clear</a><% } %>
+        </form>
+
+        <% if (!trips.length) { %>
+          <div class="empty"><div class="ei">🗺️</div><p>No trips found. <a href="/trips/new">Create one!</a></p></div>
+        <% } else { %>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Trip</th><th>Owner</th><th>Cities</th><th>Start</th><th>End</th><th>Budget</th><th>Status</th><th>Actions</th></tr></thead>
+              <tbody>
+                <% trips.forEach(t => { %>
+                <% const isOwner = user && t.user && t.user._id && t.user._id.toString() === user._id.toString(); %>
+                <% const canEdit = isOwner || user.role === 'admin'; %>
+                <tr>
+                  <td><a href="/trips/<%= t._id %>"><%= t.name %></a></td>
+                  <td style="color:var(--text3);font-size:13px"><%= t.user?.username || '—' %></td>
+                  <td style="color:var(--text3)"><%= t.cities.map(c=>c.name).join(', ') || '—' %></td>
+                  <td style="color:var(--text3);font-size:13px"><%= new Date(t.startDate).toLocaleDateString() %></td>
+                  <td style="color:var(--text3);font-size:13px"><%= new Date(t.endDate).toLocaleDateString() %></td>
+                  <td style="color:var(--text3)"><%= t.budget ? '$'+t.budget.toLocaleString() : '—' %></td>
+                  <td>
+                    <span class="badge b-<%= t.status==='planned'?'blue':t.status==='ongoing'?'green':t.status==='completed'?'purple':'red' %>
+                      s-<%= t.status %>" style="text-transform:capitalize"><%= t.status %></span>
+                  </td>
+                  <td style="display:flex;gap:6px">
+                    <% if (canEdit) { %>
+                      <a href="/trips/<%= t._id %>/edit" class="btn btn-ghost btn-xs">Edit</a>
+                      <form action="/trips/<%= t._id %>?_method=DELETE" method="POST"
+                            onsubmit="return confirm('Delete this trip?')">
+                        <button class="btn btn-danger btn-xs">Delete</button>
+                      </form>
+                    <% } %>
+                  </td>
+                </tr>
+                <% }) %>
+              </tbody>
+            </table>
+          </div>
+        <% } %>
+      </div>
+    </div>
+  </div>
+</div>
+<%- include('../partials/foot') %>

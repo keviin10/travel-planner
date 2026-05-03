@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About Us | TravelPlanner</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/variables.css" />
+  <link rel="stylesheet" href="/css/home.css" />
+  <link rel="stylesheet" href="/css/about.css" />
+  <style>
+    .nav-hamburger { display: none; }
+  </style>
+</head>
+<body>
+  <nav class="navbar-home" id="navbar">
+    <div class="logo">
+      <a href="/">✈️ <span>TravelPlanner</span></a>
+    </div>
+    <div class="nav-links" id="navLinks">
+      <a href="/#continents">Continents</a>
+      <a href="/#stats">Stats</a>
+      <a href="/about">About</a>
+      <% if (!user) { %>
+        <a href="/login" class="btn-login">Login</a>
+        <a href="/register" class="btn btn-primary btn-sm" style="padding:8px 20px">Sign Up</a>
+      <% } else { %>
+        <a href="/dashboard" class="btn-login">Dashboard</a>
+        <a href="/logout" class="btn btn-ghost btn-sm">Logout</a>
+      <% } %>
+    </div>
+    <button class="nav-hamburger" id="navHamburger" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <section class="about-hero">
+    <div class="about-hero-content">
+      <h1 class="about-hero-title">Our Story</h1>
+      <p class="about-hero-subtitle">Inspiring adventures, creating memories, connecting travelers worldwide</p>
+    </div>
+  </section>
+
+  <section class="story-section fade-scroll">
+    <div class="story-content">
+      <h2 class="story-title">Who We Are</h2>
+      <p class="story-text">TravelPlanner was born from a simple idea: travel should be organized, memorable, and accessible to everyone. Founded in 2024, our platform has helped thousands of travelers plan their perfect trips, track their adventures, and connect with like-minded explorers.</p>
+      <p class="story-text">We believe that every journey tells a story — from the bustling streets of Tokyo to the serene beaches of Bali. Our mission is to provide the tools you need to make every trip unforgettable.</p>
+    </div>
+    <div class="story-image">
+      <img src="/assets/bali.jpeg" alt="Our Journey" />
+    </div>
+  </section>
+
+  <section class="mission-section fade-scroll">
+    <h2 class="mission-title">Our Mission</h2>
+    <p class="mission-text">To empower travelers with smart tools, personalized planning, and a community that shares the passion for exploration. We're building a world where every adventure is just a few clicks away.</p>
+  </section>
+
+  <section class="values-section fade-scroll">
+    <h2 class="values-title">Our Values</h2>
+    <div class="values-grid">
+      <div class="value-card">
+        <div class="value-icon">🌍</div>
+        <h3 class="value-name">Exploration</h3>
+        <p class="value-desc">Curiosity drives us to discover new horizons and embrace the unknown.</p>
+      </div>
+      <div class="value-card">
+        <div class="value-icon">🤝</div>
+        <h3 class="value-name">Community</h3>
+        <p class="value-desc">Building connections between travelers across the globe.</p>
+      </div>
+      <div class="value-card">
+        <div class="value-icon">💡</div>
+        <h3 class="value-name">Innovation</h3>
+        <p class="value-desc">Constantly improving tools to make travel planning effortless.</p>
+      </div>
+      <div class="value-card">
+        <div class="value-icon">🌟</div>
+        <h3 class="value-name">Quality</h3>
+        <p class="value-desc">Delivering exceptional experiences every step of the way.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta-section fade-scroll">
+    <h2 class="cta-title">Ready to start your journey?</h2>
+    <p class="cta-text">Join thousands of travelers who organize their adventures with TravelPlanner.</p>
+    <% if (!user) { %>
+      <a href="/register" class="btn btn-primary btn-large">Create Free Account</a>
+    <% } else { %>
+      <a href="/dashboard" class="btn btn-primary btn-large">Go to Dashboard</a>
+    <% } %>
+  </section>
+
+  <footer>
+    <p>© 2024 TravelPlanner. All rights reserved. | Explore. Plan. Travel.</p>
+  </footer>
+
+  <script>
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      navbar.classList.toggle('scrolled', window.scrollY > 50);
+    });
+
+    const navHamburger = document.getElementById('navHamburger');
+    const navLinks     = document.getElementById('navLinks');
+    if (navHamburger) {
+      navHamburger.addEventListener('click', () => {
+        navHamburger.classList.toggle('open');
+        navLinks.classList.toggle('open');
+      });
+    }
+
+    const fadeElements = document.querySelectorAll('.fade-scroll');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => entry.target.classList.toggle('visible', entry.isIntersecting));
+    }, { threshold: 0.15, rootMargin: '0px 0px -50px 0px' });
+    fadeElements.forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>

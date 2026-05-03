@@ -1,0 +1,60 @@
+<%- include('../partials/head') %>
+<div class="app-shell">
+  <%- include('../partials/sidebar') %>
+  <div class="main-content">
+    <div class="topbar">
+      <div class="topbar-title">New Theme</div>
+      <a href="/themes/landing" class="btn btn-ghost btn-sm">← Back</a>
+    </div>
+    <div class="page">
+      <div class="card form-card">
+        <% if (error) { %><div class="alert alert-error">⚠️ <%= error %></div><% } %>
+        <p style="color:var(--text3);font-size:13px;margin-bottom:20px">
+          Create the theme first. You can add cities to it from the theme page after saving.
+        </p>
+        <form action="/themes" method="POST">
+          <div class="form-grid g2">
+            <div class="form-group">
+              <label>Theme Name *</label>
+              <select name="name" required>
+                <option value="">Select Theme</option>
+                <option value="Civil Marriage">💍 Civil Marriage</option>
+                <option value="Honeymoon">🌹 Honeymoon</option>
+                <option value="Girls Trip">👯 Girls Trip</option>
+                <option value="Festival Escapes">🎉 Festival Escapes</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Status</label>
+              <select name="isActive">
+                <option value="on">Active</option>
+                <option value="">Inactive</option>
+              </select>
+            </div>
+            <div class="form-group" style="grid-column:1/-1">
+              <label>Title *</label>
+              <input type="text" name="title" required placeholder="e.g. Civil Marriage Destinations" />
+            </div>
+            <div class="form-group" style="grid-column:1/-1">
+              <label>Subtitle *</label>
+              <input type="text" name="subtitle" required placeholder="e.g. Romantic ceremonies abroad" />
+            </div>
+            <div class="form-group" style="grid-column:1/-1">
+              <label>Description *</label>
+              <textarea name="description" rows="4" required placeholder="Describe this theme..."></textarea>
+            </div>
+            <div class="form-group" style="grid-column:1/-1">
+              <label>Image URL</label>
+              <input type="text" name="image" placeholder="/assets/civil-marriage.jpg" />
+            </div>
+          </div>
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Create Theme</button>
+            <a href="/themes/landing" class="btn btn-ghost">Cancel</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<%- include('../partials/foot') %>

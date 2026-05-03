@@ -1,0 +1,68 @@
+<%- include('../partials/head') %>
+<div class="app-shell">
+  <%- include('../partials/sidebar') %>
+  
+  <div class="main-content">
+    <div class="topbar">
+      <div class="topbar-title">Manage Users</div>
+    </div>
+
+    <div class="page">
+      <div class="card">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Joined</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <% users.forEach(u => { %>
+              <tr>
+                <td style="font-weight:600;color:var(--text)">
+                  <%= u.username || '—' %>
+                </td>
+
+                <td style="color:var(--text3)">
+                  <%= u.email || '—' %>
+                </td>
+
+                <td>
+                  <span class="badge b-<%= u.role === 'admin' ? 'purple' : 'cyan' %>">
+                    <%= u.role || 'user' %>
+                  </span>
+                </td>
+
+                <td style="color:var(--text3);font-size:13px">
+                  <%= u.createdAt ? new Date(u.createdAt).toLocaleDateString() : '—' %>
+                </td>
+
+                <td>
+                  <% if (user && u._id && user._id && u._id.toString() !== user._id.toString()) { %>
+                    <form action="/dashboard/users/<%= u._id %>?_method=DELETE"
+                          method="POST"
+                          onsubmit="return confirm('Delete <%= u.username || "this user" %>?')">
+                      <button class="btn btn-danger btn-xs">Delete</button>
+                    </form>
+                  <% } else { %>
+                    <span style="font-size:12px;color:var(--text3)">You</span>
+                  <% } %>
+                </td>
+
+              </tr>
+              <% }) %>
+            </tbody>
+
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/foot') %>

@@ -1,0 +1,111 @@
+<%- include('../partials/head') %>
+<div class="auth-page">
+  <div class="auth-card">
+    <div class="auth-logo">
+      <div class="logo-icon">✈️</div>
+      <div><h1>TravelPlanner</h1><p>Your world, your trips</p></div>
+    </div>
+    <h2 class="auth-title">Create account</h2>
+    <p class="auth-sub">First user registered becomes admin</p>
+
+    <% if (error) { %><div class="alert alert-error">⚠️ <%= error %></div><% } %>
+
+    <form action="/register" method="POST">
+      <div class="form-grid" style="gap:15px">
+        <div class="form-group">
+          <label>Username</label>
+          <input type="text" name="username" required placeholder="explorer42" />
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" name="email" required placeholder="you@example.com" />
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" name="password" id="password" required placeholder="Min 8 chars, mixed case, number & symbol" />
+          <div id="strength-bar-wrap" style="margin-top:6px;display:none">
+            <div style="height:4px;border-radius:4px;background:var(--border);overflow:hidden">
+              <div id="strength-bar" style="height:100%;width:0;transition:width .3s,background .3s;border-radius:4px"></div>
+            </div>
+            <div id="strength-label" style="font-size:11px;margin-top:4px;color:var(--text3)"></div>
+          </div>
+          <ul id="pwd-rules" style="font-size:11px;color:var(--text3);margin-top:6px;padding-left:16px;display:none;line-height:1.9">
+            <li id="r-len">At least 8 characters</li>
+            <li id="r-upper">At least 1 uppercase letter (A–Z)</li>
+            <li id="r-lower">At least 1 lowercase letter (a–z)</li>
+            <li id="r-digit">At least 1 number (0–9)</li>
+            <li id="r-special">At least 1 special character (!@#$%…)</li>
+          </ul>
+        </div>
+        <div class="form-group">
+          <label>Confirm Password</label>
+          <input type="password" name="confirmPassword" id="confirmPassword" required placeholder="Repeat password" />
+          <div id="match-msg" style="font-size:11px;margin-top:4px"></div>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;padding:11px">
+          Create Account
+        </button>
+      </div>
+    </form>
+    <p class="auth-footer">Already have an account? <a href="/login">Sign in</a></p>
+  </div>
+</div>
+
+<script>
+  const pwdInput     = document.getElementById('password');
+  const confirmInput = document.getElementById('confirmPassword');
+  const bar          = document.getElementById('strength-bar');
+  const barWrap      = document.getElementById('strength-bar-wrap');
+  const label        = document.getElementById('strength-label');
+  const rules        = document.getElementById('pwd-rules');
+
+  const checks = {
+    'r-len':     v => v.length >= 8,
+    'r-upper':   v => /[A-Z]/.test(v),
+    'r-lower':   v => /[a-z]/.test(v),
+    'r-digit':   v => /\d/.test(v),
+    'r-special': v => /[!@#$%^&*()\-_=+\[\]{};':"\\|,.<>\/?]/.test(v),
+  };
+
+  const levels = [
+    { color: '#ef4444', text: 'Very weak' },
+    { color: '#f97316', text: 'Weak' },
+    { color: '#eab308', text: 'Fair' },
+    { color: '#22c55e', text: 'Good' },
+    { color: '#7c6af7', text: 'Strong' },
+  ];
+
+  pwdInput.addEventListener('input', () => {
+    const v = pwdInput.value;
+    if (!v) { barWrap.style.display = 'none'; rules.style.display = 'none'; return; }
+    barWrap.style.display = 'block';
+    rules.style.display = 'block';
+
+    let score = 0;
+    for (const [id, fn] of Object.entries(checks)) {
+      const el = document.getElementById(id);
+      const ok = fn(v);
+      if (ok) { score++; el.style.color = '#22c55e'; el.style.textDecoration = 'line-through'; }
+      else     { el.style.color = 'var(--text3)';    el.style.textDecoration = 'none'; }
+    }
+
+    const lvl = levels[score - 1] || levels[0];
+    bar.style.width      = (score * 20) + '%';
+    bar.style.background = lvl.color;
+    label.textContent    = lvl.text;
+    label.style.color    = lvl.color;
+  });
+
+  confirmInput.addEventListener('input', () => {
+    const msg = document.getElementById('match-msg');
+    if (!confirmInput.value) { msg.textContent = ''; return; }
+    if (confirmInput.value === pwdInput.value) {
+      msg.textContent = '✓ Passwords match';
+      msg.style.color = '#22c55e';
+    } else {
+      msg.textContent = '✗ Passwords do not match';
+      msg.style.color = '#ef4444';
+    }
+  });
+</script>
+<%- include('../partials/foot') %>

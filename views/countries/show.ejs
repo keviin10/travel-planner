@@ -1,0 +1,78 @@
+<%- include('../partials/head') %>
+<div class="app-shell">
+  <%- include('../partials/sidebar') %>
+  <div class="main-content">
+    <div class="topbar">
+      <div class="topbar-title"><%= country.name %></div>
+      <div class="topbar-actions">
+        <% if (user.role === 'admin') { %>
+          <a href="/countries/<%= country._id %>/edit" class="btn btn-ghost btn-sm">✏️ Edit</a>
+          <form action="/countries/<%= country._id %>?_method=DELETE" method="POST"
+                onsubmit="return confirm('Delete this country?')">
+            <button class="btn btn-danger btn-sm">🗑 Delete</button>
+          </form>
+        <% } %>
+        <a href="/countries" class="btn btn-ghost btn-sm">← Back</a>
+      </div>
+    </div>
+    <div class="page">
+      <% if (typeof error !== 'undefined' && error) { %>
+        <div class="alert alert-error" style="margin-bottom:18px">⚠️ <%= error %></div>
+      <% } %>
+      
+      <div class="card" style="margin-bottom:20px">
+        <% const countryImage = country.image || '/assets/default-country.jpg'; %>
+        <div style="margin-bottom:20px;border-radius:8px;overflow:hidden;max-height:700px">
+          <img src="<%= countryImage %>" 
+               style="width:100%;height:auto;display:block;object-fit:cover" 
+               onerror="this.src='/assets/default-country.jpg'" />
+        </div>
+        <h2 style="font-size:24px;font-weight:800;margin-bottom:12px">🌍 <%= country.name %></h2>
+        <p style="color:var(--text2)">Country Code: <span class="badge b-gray"><%= country.code || 'N/A' %></span></p>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Cities in <%= country.name %> (<%= cities.length %>)</div>
+          <% if (user.role === 'admin') { %>
+            <a href="/cities/new" class="btn btn-primary btn-sm">+ Add City</a>
+          <% } %>
+        </div>
+        <% if (!cities.length) { %>
+          <div class="empty"><div class="ei">🏙️</div><p>No cities for this country yet.</p></div>
+        <% } else { %>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>City</th>
+                  <th>Population</th>
+                  <th>Language</th>
+                  <th>Currency</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% cities.forEach(c => { 
+                  const cityImage = c.image || '/assets/default-city.jpg';
+                %>
+                <tr>
+                  <td style="display:flex;align-items:center;gap:8px">
+                    <img src="<%= cityImage %>" 
+                         style="width:32px;height:32px;border-radius:6px;object-fit:cover" 
+                         onerror="this.src='/assets/default-city.jpg'" />
+                    <a href="/cities/<%= c._id %>"><%= c.name %></a>
+                  </td>
+                  <td style="color:var(--text3)"><%= c.population ? c.population.toLocaleString() : '—' %></td>
+                  <td style="color:var(--text3)"><%= c.language || '—' %></td>
+                  <td style="color:var(--text3)"><%= c.currency || '—' %></td>
+                </tr>
+                <% }) %>
+              </tbody>
+            </table>
+          </div>
+        <% } %>
+      </div>
+    </div>
+  </div>
+</div>
+<%- include('../partials/foot') %>

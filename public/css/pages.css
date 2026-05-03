@@ -1,0 +1,109 @@
+/* ── Auth ── */
+.auth-page {
+  min-height: 100vh; display: flex; align-items: center; justify-content: center;
+  background: var(--bg); padding: 20px;
+}
+
+.auth-card {
+  background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius-lg);
+  padding: 40px; width: 100%; max-width: 420px; box-shadow: var(--shadow);
+}
+/* ── Dashboard Hero ── */
+.dashboard-hero {
+  position: relative;
+  width: 100%;
+  height: 550px;
+  margin-left: -35px;
+  margin-right: -35px;
+  width: calc(100% + 64px);
+  margin-top: -35px;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+/* The container that holds all images */
+.hero-slider {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.hero-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  opacity: 0;
+  animation: fade 16s infinite ease-in-out;
+}
+
+/* Stagger each image */
+.hero-img:nth-child(1) { animation-delay: 0s; }
+.hero-img:nth-child(2) { animation-delay: 4s; }
+.hero-img:nth-child(3) { animation-delay: 8s; }
+.hero-img:nth-child(4) { animation-delay: 12s; }
+
+/* The Fade Animation */
+@keyframes fade {
+  0%   { opacity: 0; }
+  10%  { opacity: 1; }
+  25%  { opacity: 1; }
+  35%  { opacity: 0; }
+  100% { opacity: 0; }
+}
+
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.6) 0%, transparent 60%);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 30px;
+  color: white;
+  pointer-events: none; /* Allows clicks to go through to the images if needed */
+  z-index: 2;
+}
+
+.hero-overlay h2 {
+  font-size: 32px;
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+
+.hero-overlay p {
+  font-size: 18px;
+  opacity: 0.9;
+}
+
+/* Ensure cards look good on white background */
+.card {
+  background: #ffffff;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+}
+
+.auth-logo { display: flex; align-items: center; gap: 14px; margin-bottom: 30px; }
+.auth-logo h1 { font-size: 20px; font-weight: 800; }
+.auth-logo p  { font-size: 12px; color: var(--text3); }
+
+.auth-title { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
+.auth-sub   { font-size: 14px; color: var(--text2); margin-bottom: 26px; }
+.auth-footer { margin-top: 18px; text-align: center; font-size: 13px; color: var(--text3); }
+
+/* ── Empty state ── */
+.empty { text-align: center; padding: 56px 20px; color: var(--text3); }
+.empty .ei { font-size: 46px; margin-bottom: 10px; }
+.empty p { font-size: 15px; }
+
+/* ── Detail grid ── */
+.detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.detail-item label { font-size: 11px; font-weight: 700; letter-spacing: .6px; text-transform: uppercase; color: var(--text3); }
+.detail-item p { font-size: 14px; color: var(--text); margin-top: 3px; }
+
+/* ── Trip status colors ── */
+.s-planned   { color: #60a5fa; }
+.s-ongoing   { color: #4ade80; }
+.s-completed { color: #a78bfa; }
+.s-cancelled { color: #f87171; }

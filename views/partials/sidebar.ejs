@@ -1,0 +1,55 @@
+<!-- Overlay backdrop for mobile sidebar -->
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-icon">✈️</div>
+    <div>
+      <span>TravelPlanner</span>
+      <small>Explore the world</small>
+    </div>
+  </div>
+
+  <nav class="sidebar-nav">
+    <div class="nav-label">Main</div>
+    <a href="/dashboard" class="nav-link <%= activePage === 'dashboard' ? 'active' : '' %>">
+      <span class="icon">🏠</span> Dashboard
+    </a>
+
+    <div class="nav-label">Travel</div>
+    <a href="/trips" class="nav-link <%= activePage === 'trips' ? 'active' : '' %>">
+      <span class="icon">🗺️</span> My Trips
+    </a>
+    <a href="/cities" class="nav-link <%= activePage === 'cities' ? 'active' : '' %>">
+      <span class="icon">🏙️</span> Cities
+    </a>
+    <a href="/countries" class="nav-link <%= activePage === 'countries' ? 'active' : '' %>">
+      <span class="icon">🌍</span> Countries
+    </a>
+    <a href="/themes/landing" class="nav-link <%= activePage === 'themes' ? 'active' : '' %>">
+      <span class="icon">🎨</span> Themes
+    </a>
+
+    <% if (user && user.role === 'admin') { %>
+    <div class="nav-label">Admin</div>
+    <a href="/dashboard/users" class="nav-link <%= activePage === 'users' ? 'active' : '' %>">
+      <span class="icon">👥</span> Users
+    </a>
+    <% } %>
+  </nav>
+
+  <div class="sidebar-footer">
+    <% if (user) { %>
+    <div class="user-card">
+      <div class="user-avatar"><%= user.username.charAt(0).toUpperCase() %></div>
+      <div class="user-info">
+        <div class="user-name"><%= user.username %></div>
+        <div class="user-role"><%= user.role %></div>
+      </div>
+      <form action="/logout" method="GET">
+        <button class="logout-btn" title="Logout">↩</button>
+      </form>
+    </div>
+    <% } %>
+  </div>
+</aside>

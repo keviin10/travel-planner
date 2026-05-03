@@ -1,0 +1,70 @@
+<%- include('../partials/head') %>
+<div class="app-shell">
+  <%- include('../partials/sidebar') %>
+  <div class="main-content">
+    <div class="topbar">
+      <div class="topbar-title">New Trip</div>
+      <a href="/trips" class="btn btn-ghost btn-sm">← Back</a>
+    </div>
+    <div class="page">
+      <div class="card form-card">
+        <% if (error) { %><div class="alert alert-error">⚠️ <%= error %></div><% } %>
+        <form action="/trips" method="POST">
+          <div class="form-grid g2">
+            <div class="form-group" style="grid-column:1/-1">
+              <label>Trip Name *</label>
+              <input type="text" name="name" required placeholder="Summer in Europe" />
+            </div>
+            <div class="form-group">
+              <label>Start Date *</label>
+              <input type="date" name="startDate" required />
+            </div>
+            <div class="form-group">
+              <label>End Date *</label>
+              <input type="date" name="endDate" required />
+            </div>
+            <div class="form-group">
+              <label>Budget ($)</label>
+              <input type="number" name="budget" placeholder="2500" min="0" />
+            </div>
+            <div class="form-group">
+              <label>Status</label>
+              <select name="status">
+                <% statuses.forEach(s => { %>
+                  <option value="<%= s %>" style="text-transform:capitalize"><%= s %></option>
+                <% }) %>
+              </select>
+            </div>
+            <div class="form-group" style="grid-column:1/-1">
+              <label>Cities (hold Ctrl/Cmd to select multiple)</label>
+              <select name="cities" multiple style="min-height:120px">
+                <% cities.forEach(c => { %>
+                  <option value="<%= c._id %>"><%= c.name %> (<%= c.country?.name || '?' %>)</option>
+                <% }) %>
+              </select>
+            </div>
+            <div class="form-group" style="grid-column:1/-1">
+              <label>Description</label>
+              <textarea name="description" placeholder="What's this trip about?"></textarea>
+            </div>
+            <div class="form-group">
+              <label>Tags (comma-separated)</label>
+              <input type="text" name="tags" placeholder="beach, culture, food" />
+            </div>
+            <div class="form-group" style="align-self:end">
+              <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
+                <input type="checkbox" name="isPublic" style="width:auto" />
+                Make this trip public
+              </label>
+            </div>
+          </div>
+          <div class="form-actions" style="margin-top:20px">
+            <button type="submit" class="btn btn-primary">Create Trip</button>
+            <a href="/trips" class="btn btn-ghost">Cancel</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<%- include('../partials/foot') %>

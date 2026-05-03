@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%= title %> | TravelPlanner</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/css/variables.css" />
+  <link rel="stylesheet" href="/css/layout.css" />
+  <link rel="stylesheet" href="/css/components.css" />
+  <link rel="stylesheet" href="/css/forms.css" />
+  <link rel="stylesheet" href="/css/tables.css" />
+  <link rel="stylesheet" href="/css/pages.css" />
+  <link rel="stylesheet" href="/css/responsive.css" />
+</head>
+<body>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const sidebar   = document.getElementById('sidebar');
+  const overlay   = document.getElementById('sidebarOverlay');
+  if (!sidebar || !overlay) return;
+
+  // Auto-inject hamburger button into the topbar
+  const topbar = document.querySelector('.topbar');
+  if (topbar) {
+    const btn = document.createElement('button');
+    btn.className = 'hamburger';
+    btn.id = 'hamburgerBtn';
+    btn.setAttribute('aria-label', 'Toggle menu');
+    btn.innerHTML = '<span></span><span></span><span></span>';
+
+    const title = topbar.querySelector('.topbar-title');
+    const left  = document.createElement('div');
+    left.className = 'topbar-left';
+    topbar.insertBefore(left, topbar.firstChild);
+    left.appendChild(btn);
+    if (title) left.appendChild(title);
+  }
+
+  const hamburger = document.getElementById('hamburgerBtn');
+  if (!hamburger) return;
+
+  function openSidebar() {
+    sidebar.classList.add('open');
+    overlay.classList.add('active');
+    hamburger.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeSidebar() {
+    sidebar.classList.remove('open');
+    overlay.classList.remove('active');
+    hamburger.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  hamburger.addEventListener('click', () =>
+    sidebar.classList.contains('open') ? closeSidebar() : openSidebar()
+  );
+  overlay.addEventListener('click', closeSidebar);
+  sidebar.querySelectorAll('.nav-link').forEach(link =>
+    link.addEventListener('click', closeSidebar)
+  );
+});
+</script>

@@ -1,0 +1,143 @@
+<%- include('../partials/head') %>
+<div class="app-shell">
+  <%- include('../partials/sidebar') %>
+  <div class="main-content">
+    <div class="topbar">
+      <div class="topbar-title"><%= theme.title %></div>
+      <div class="topbar-actions">
+        <% if (user && user.role === 'admin') { %>
+          <a href="/themes/<%= theme._id %>/edit" class="btn btn-ghost btn-sm">✏️ Edit Theme</a>
+          <form action="/themes/<%= theme._id %>?_method=DELETE" method="POST"
+                style="display:inline" onsubmit="return confirm('Delete this theme?')">
+            <button class="btn btn-danger btn-sm">🗑 Delete</button>
+          </form>
+        <% } %>
+        <a href="/themes/landing" class="btn btn-ghost btn-sm">← Back</a>
+      </div>
+    </div>
+    <div class="page">
+
+      <!-- Hero Banner -->
+      <div style="background:linear-gradient(rgba(0,0,0,0.55),rgba(0,0,0,0.55)),url('<%= theme.image %>');background-size:cover;background-position:center;border-radius:20px;padding:100px 40px;margin-bottom:28px;color:white;min-height:450px;display:flex;flex-direction:column;justify-content:center">
+        <h1 style="font-size:40px;font-weight:800;margin-bottom:10px"><%= theme.title %></h1>
+        <p style="font-size:18px;margin-bottom:10px;max-width:700px;opacity:0.95"><%= theme.subtitle %></p>
+        <p style="font-size:14px;opacity:0.85;max-width:600px;line-height:1.7"><%= theme.description %></p>
+      </div>
+
+      <!-- ADMIN: Add Cities Panel -->
+      <% if (user && user.role === 'admin') { %>
+      <div class="card" style="margin-bottom:24px">
+        <div class="card-header">
+          <div class="card-title">➕ Add Cities to "<%= theme.title %>"</div>
+        </div>
+        <% if (availableCities && availableCities.length) { %>
+          <form action="/themes/<%= theme._id %>/cities" method="POST"
+                style="display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap">
+            <div style="flex:1;min-width:260px">
+              <select name="cities" multiple
+                      style="width:100%;min-height:130px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);padding:8px 12px;font-size:14px">
+                <% availableCities.forEach(c => { 
+                  const cityImage = c.image || '/assets/default-city.jpg';
+                %>
+                  <option value="<%= c._id %>">
+                    🏙️ <%= c.name %> (<%= c.country?.name || '?' %>)
+                  </option>
+                <% }) %>
+              </select>
+              <small style="color:var(--text3);font-size:12px;margin-top:4px;display:block">
+                Hold Ctrl / Cmd to select multiple cities
+              </small>
+            </div>
+            <button type="submit" class="btn btn-primary btn-sm" style="margin-top:2px">
+              ➕ Add Selected
+            </button>
+          </form>
+        <% } else { %>
+          <p style="color:var(--text3);font-size:14px">
+            All available cities have been added to this theme.
+          </p>
+        <% } %>
+      </div>
+      <% } %>
+
+      <!-- Cities Table with Image Thumbnails -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">🏙️ Cities in this Theme (<%= theme.cities.length %>)</div>
+        </div>
+
+        <% if (!theme.cities.length) { %>
+          <div class="empty">
+            <div class="ei">🏙️</div>
+            <p>
+              <% if (user && user.role === 'admin') { %>
+                No cities yet — add some using the panel above.
+              <% } else { %>
+                No cities have been added to this theme yet.
+              <% } %>
+            </p>
+          </div>
+        <% } else { %>
+          <div class="table-wrap">
+            <table style="width:100%">
+              <thead>
+                <tr>
+                  <th style="width:30%">City</th>
+                  <th style="width:20%">Country</th>
+                  <th style="width:15%">Population</th>
+                  <th style="width:15%">Bucket List</th>
+                  <th style="width:20%">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% theme.cities.forEach(city => { %>
+                <% const isInBucket = bucketIds.includes(city._id.toString()); %>
+                <% const cityImage = city.image || '/assets/default-city.jpg'; %>
+                <tr>
+                  <td style="vertical-align:middle;padding:12px 8px">
+                    <div style="display:flex;align-items:center;gap:12px">
+                      <img src="<%= cityImage %>" 
+                           style="width:80px;height:80px;border-radius:8px;object-fit:cover" 
+                           onerror="this.src='/assets/default-city.jpg'" />
+                      <a href="/cities/<%= city._id %>" style="font-weight:600;font-size:15px">
+                        🏙️ <%= city.name %>
+                      </a>
+                    </div>
+                  </td>
+                  <td style="vertical-align:middle;color:var(--text3)"><%= city.country?.name || '—' %></td>
+                  <td style="vertical-align:middle;color:var(--text3)">
+                    <%= city.population ? city.population.toLocaleString() : '—' %>
+                  </td>
+                  <td style="vertical-align:middle">
+                    <form action="/cities/<%= city._id %>/bucket" method="POST" style="margin:0">
+                      <button type="submit"
+                              class="btn <%= isInBucket ? 'btn-primary' : 'btn-ghost' %> btn-xs"
+                              style="margin:0;white-space:nowrap">
+                        <%= isInBucket ? '⭐ Saved' : '☆ Save' %>
+                      </button>
+                    </form>
+                  </td>
+                  <td style="vertical-align:middle;padding:12px 8px">
+                    <div style="display:flex;gap:8px;align-items:center;flex-wrap:nowrap">
+                      <a href="/trips/new?city=<%= city._id %>" class="btn btn-cyan btn-xs" style="margin:0;white-space:nowrap">✈️ Plan Trip</a>
+                      <% if (user && user.role === 'admin') { %>
+                        <form action="/themes/<%= theme._id %>/cities/<%= city._id %>?_method=DELETE"
+                              method="POST" style="margin:0;display:inline"
+                              onsubmit="return confirm('Remove <%= city.name %> from this theme?')">
+                          <button class="btn btn-danger btn-xs" style="margin:0;white-space:nowrap">🗑 Remove</button>
+                        </form>
+                      <% } %>
+                    </div>
+                  </td>
+                </tr>
+                <% }) %>
+              </tbody>
+            </table>
+          </div>
+        <% } %>
+      </div>
+
+    </div>
+  </div>
+</div>
+<%- include('../partials/foot') %>

@@ -1,0 +1,73 @@
+<%- include('../partials/head') %>
+<div class="app-shell">
+  <%- include('../partials/sidebar') %>
+  <div class="main-content">
+    <div class="topbar">
+      <div class="topbar-title">Edit Trip</div>
+      <a href="/trips/<%= trip._id %>" class="btn btn-ghost btn-sm">← Back</a>
+    </div>
+    <div class="page">
+      <div class="card form-card">
+        <% if (error) { %><div class="alert alert-error">⚠️ <%= error %></div><% } %>
+        <form action="/trips/<%= trip._id %>?_method=PUT" method="POST">
+          <div class="form-grid g2">
+            <div class="form-group" style="grid-column:1/-1">
+              <label>Trip Name *</label>
+              <input type="text" name="name" required value="<%= trip.name %>" />
+            </div>
+            <div class="form-group">
+              <label>Start Date *</label>
+              <input type="date" name="startDate" required value="<%= trip.startDate ? new Date(trip.startDate).toISOString().split('T')[0] : '' %>" />
+            </div>
+            <div class="form-group">
+              <label>End Date *</label>
+              <input type="date" name="endDate" required value="<%= trip.endDate ? new Date(trip.endDate).toISOString().split('T')[0] : '' %>" />
+            </div>
+            <div class="form-group">
+              <label>Budget ($)</label>
+              <input type="number" name="budget" min="0" value="<%= trip.budget || '' %>" />
+            </div>
+            <div class="form-group">
+              <label>Status</label>
+              <select name="status">
+                <% statuses.forEach(s => { %>
+                  <option value="<%= s %>" <%= trip.status===s?'selected':'' %> style="text-transform:capitalize"><%= s %></option>
+                <% }) %>
+              </select>
+            </div>
+            <div class="form-group" style="grid-column:1/-1">
+              <label>Cities (hold Ctrl/Cmd to select multiple)</label>
+              <select name="cities" multiple style="min-height:120px">
+                <% const selectedIds = trip.cities.map(c=>c.toString()) %>
+                <% cities.forEach(c => { %>
+                  <option value="<%= c._id %>" <%= selectedIds.includes(c._id.toString())?'selected':'' %>>
+                    <%= c.name %> (<%= c.country?.name || '?' %>)
+                  </option>
+                <% }) %>
+              </select>
+            </div>
+            <div class="form-group" style="grid-column:1/-1">
+              <label>Description</label>
+              <textarea name="description"><%= trip.description || '' %></textarea>
+            </div>
+            <div class="form-group">
+              <label>Tags (comma-separated)</label>
+              <input type="text" name="tags" value="<%= (trip.tags||[]).join(', ') %>" />
+            </div>
+            <div class="form-group" style="align-self:end">
+              <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
+                <input type="checkbox" name="isPublic" style="width:auto" <%= trip.isPublic?'checked':'' %> />
+                Make this trip public
+              </label>
+            </div>
+          </div>
+          <div class="form-actions" style="margin-top:20px">
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+            <a href="/trips/<%= trip._id %>" class="btn btn-ghost">Cancel</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<%- include('../partials/foot') %>
