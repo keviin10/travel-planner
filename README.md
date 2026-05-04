@@ -2,7 +2,7 @@
 
 A full-stack travel planning web application built with **Node.js, Express, MongoDB, Mongoose, and EJS**, following the **MVC architecture**.
 
----
+--
 
 ## 🗂 Domain: Travel Planning
 
