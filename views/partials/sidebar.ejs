@@ -2,6 +2,9 @@
 <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
 <aside class="sidebar" id="sidebar">
+  <!-- Close button inside sidebar -->
+  <button class="sidebar-close-btn" id="sidebarCloseBtn" aria-label="Close menu">✕</button>
+  
   <div class="sidebar-logo">
     <div class="logo-icon">✈️</div>
     <div>
@@ -47,7 +50,7 @@
         <div class="user-role"><%= user.role %></div>
       </div>
       <form action="/logout" method="GET">
-        <button class="logout-btn" title="Logout">↩</button>
+        <button class="logout-btn" title="Logout">↩️</button>
       </form>
     </div>
     <% } %>

@@ -3,10 +3,14 @@
   <%- include('../partials/sidebar') %>
   <div class="main-content">
     <div class="topbar">
-      <div class="topbar-title">Countries</div>
-      <% if (user.role === 'admin') { %>
-        <a href="/countries/new" class="btn btn-primary">+ New Country</a>
-      <% } %>
+      <div class="topbar-left">
+        <div class="topbar-title">Countries</div>
+      </div>
+      <div class="topbar-actions">
+        <% if (user.role === 'admin') { %>
+          <a href="/countries/new" class="btn btn-primary btn-sm">+ New Country</a>
+        <% } %>
+      </div>
     </div>
     <div class="page">
       <div class="card">

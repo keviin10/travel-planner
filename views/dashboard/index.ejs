@@ -1,16 +1,77 @@
+<!-- Overlay backdrop for mobile sidebar -->
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<aside class="sidebar" id="sidebar">
+  <!-- Close button inside sidebar -->
+  <button class="sidebar-close-btn" id="sidebarCloseBtn" aria-label="Close menu">✕</button>
+  
+  <div class="sidebar-logo">
+    <div class="logo-icon">✈️</div>
+    <div>
+      <span>TravelPlanner</span>
+      <small>Explore the world</small>
+    </div>
+  </div>
+
+  <nav class="sidebar-nav">
+    <div class="nav-label">Main</div>
+    <a href="/dashboard" class="nav-link <%= activePage === 'dashboard' ? 'active' : '' %>">
+      <span class="icon">🏠</span> Dashboard
+    </a>
+
+    <div class="nav-label">Travel</div>
+    <a href="/trips" class="nav-link <%= activePage === 'trips' ? 'active' : '' %>">
+      <span class="icon">🗺️</span> My Trips
+    </a>
+    <a href="/cities" class="nav-link <%= activePage === 'cities' ? 'active' : '' %>">
+      <span class="icon">🏙️</span> Cities
+    </a>
+    <a href="/countries" class="nav-link <%= activePage === 'countries' ? 'active' : '' %>">
+      <span class="icon">🌍</span> Countries
+    </a>
+    <a href="/themes/landing" class="nav-link <%= activePage === 'themes' ? 'active' : '' %>">
+      <span class="icon">🎨</span> Themes
+    </a>
+
+    <% if (user && user.role === 'admin') { %>
+    <div class="nav-label">Admin</div>
+    <a href="/dashboard/users" class="nav-link <%= activePage === 'users' ? 'active' : '' %>">
+      <span class="icon">👥</span> Users
+    </a>
+    <% } %>
+  </nav>
+
+  <div class="sidebar-footer">
+    <% if (user) { %>
+    <div class="user-card">
+      <div class="user-avatar"><%= user.username.charAt(0).toUpperCase() %></div>
+      <div class="user-info">
+        <div class="user-name"><%= user.username %></div>
+        <div class="user-role"><%= user.role %></div>
+      </div>
+      <form action="/logout" method="GET">
+        <button class="logout-btn" title="Logout">↩</button>
+      </form>
+    </div>
+    <% } %>
+  </div>
+</aside>
+
 <%- include('../partials/head') %>
 <div class="app-shell">
-  <%- include('../partials/sidebar') %>
   <div class="main-content">
     
     <div class="topbar">
       <div class="topbar-title">Dashboard</div>
-      <span style="font-size:13px;color:var(--text3)">
-        Hey, <strong style="color:var(--text)"><%= user?.username || 'Guest' %></strong>
-        <span class="badge b-<%= user?.role === 'admin' ? 'purple' : 'cyan' %>" style="margin-left:6px">
-          <%= user?.role || 'user' %>
+      <div class="topbar-actions">
+        <!-- REMOVED the second hamburger menu that was here -->
+        <span style="font-size:13px;color:var(--text3);display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+          Hey, <strong style="color:var(--text)"><%= user?.username || 'Guest' %></strong>
+          <span class="badge b-<%= user?.role === 'admin' ? 'purple' : 'cyan' %>" style="margin-left:0">
+            <%= user?.role || 'user' %>
+          </span>
         </span>
-      </span>
+      </div>
     </div>
 
     <div class="page">
@@ -54,10 +115,12 @@
         <% } %>
       </div>
 
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:22px">
+      <div class="dashboard-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:22px">
 
         <div class="card">
-          <div class="card-header"><div class="card-title">Trip Status</div></div>
+          <div class="card-header">
+            <div class="card-title">📊 Trip Status</div>
+          </div>
 
           <% if (!statusBreakdown.length) { %>
             <p style="color:var(--text3);font-size:14px">No trips yet.</p>
@@ -82,8 +145,8 @@
 
         <div class="card">
           <div class="card-header">
-            <div class="card-title">Explore Cities</div>
-            <a href="/cities" class="btn btn-ghost btn-sm">View all</a>
+            <div class="card-title">📍 Popular Cities</div>
+            <a href="/cities" class="btn btn-ghost btn-sm">View all →</a>
           </div>
 
           <% if (!popularCities.length) { %>
@@ -92,17 +155,17 @@
             <% popularCities.forEach(c => { 
               const cityImage = c.image || '/assets/default-city.jpg';
             %>
-            <div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border)">
-              <div style="display:flex;align-items:center;gap:10px">
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border)">
+              <div style="display:flex;align-items:center;gap:10px;flex:1;min-width:0">
                 <img src="<%= cityImage %>" 
-                     style="width:32px;height:32px;border-radius:6px;object-fit:cover" 
+                     style="width:36px;height:36px;border-radius:8px;object-fit:cover;flex-shrink:0" 
                      onerror="this.src='/assets/default-city.jpg'" />
-                <div>
-                  <a href="/cities/<%= c._id %>" style="font-size:13px;font-weight:600"><%= c.name %></a>
-                  <div style="font-size:12px;color:var(--text3)"><%= c.country?.name || '—' %></div>
+                <div style="min-width:0">
+                  <a href="/cities/<%= c._id %>" style="font-size:13px;font-weight:600;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"><%= c.name %></a>
+                  <div style="font-size:11px;color:var(--text3)"><%= c.country?.name || '—' %></div>
                 </div>
               </div>
-              <span style="font-size:12px;color:var(--text3)"><%= c.visitors?.length || 0 %> saved</span>
+              <span style="font-size:11px;color:var(--text3);flex-shrink:0"><%= c.visitors?.length || 0 %> saved</span>
             </div>
             <% }) %>
           <% } %>
@@ -111,7 +174,7 @@
 
       <div class="card">
         <div class="card-header">
-          <div class="card-title">Recent Trips</div>
+          <div class="card-title">✈️ Recent Trips</div>
           <a href="/trips/new" class="btn btn-primary btn-sm">+ New Trip</a>
         </div>
 
@@ -123,21 +186,23 @@
         <% } else { %>
           <div class="table-wrap">
             <table>
-              <thead><tr><th>Trip</th><th>Cities</th><th>Dates</th><th>Status</th><th>Budget</th></tr></thead>
+              <thead>
+                <tr><th>Trip</th><th>Cities</th><th>Dates</th><th>Status</th><th>Budget</th></tr>
+              </thead>
               <tbody>
                 <% myTrips.forEach(t => { %>
                 <tr>
                   <td><a href="/trips/<%= t._id %>"><%= t.name %></a></td>
-                  <td style="color:var(--text3)"><%= t.cities.map(c=>c.name).join(', ') || '—' %></td>
-                  <td style="color:var(--text3);font-size:13px">
+                  <td style="color:var(--text3);font-size:12px"><%= t.cities.map(c=>c.name).join(', ') || '—' %></td>
+                  <td style="color:var(--text3);font-size:12px">
                     <%= new Date(t.startDate).toLocaleDateString() %> → <%= new Date(t.endDate).toLocaleDateString() %>
                   </td>
-                  <td><span class="s-<%= t.status %>" style="font-size:13px;font-weight:600;text-transform:capitalize"><%= t.status %></span></td>
+                  <td><span class="s-<%= t.status %>" style="font-size:12px;font-weight:600;text-transform:capitalize"><%= t.status %></span></td>
                   <td style="color:var(--text3)"><%= t.budget ? '$'+t.budget.toLocaleString() : '—' %></td>
                 </tr>
                 <% }) %>
               </tbody>
-            </table>
+            <table>
           </div>
         <% } %>
       </div>
@@ -145,4 +210,26 @@
     </div>
   </div>
 </div>
+
+<script>
+  // Close button inside sidebar - closes the sidebar
+  (function() {
+    const closeBtn = document.getElementById('sidebarCloseBtn');
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+    const hamburgerBtn = document.getElementById('hamburgerBtn');
+    
+    function closeSidebar() {
+      if (sidebar) sidebar.classList.remove('open');
+      if (hamburgerBtn) hamburgerBtn.classList.remove('open');
+      if (overlay) overlay.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+    
+    if (closeBtn) {
+      closeBtn.addEventListener('click', closeSidebar);
+    }
+  })();
+</script>
+
 <%- include('../partials/foot') %>

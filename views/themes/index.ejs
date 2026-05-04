@@ -3,10 +3,12 @@
   <%- include('../partials/sidebar') %>
   <div class="main-content">
     <div class="topbar">
-      <div class="topbar-title">All Themes</div>
-      <div style="display:flex;gap:10px">
+      <div class="topbar-left">
+        <div class="topbar-title">All Themes</div>
+      </div>
+      <div class="topbar-actions">
         <% if (user && user.role === 'admin') { %>
-          <a href="/themes/new" class="btn btn-primary">+ New Theme</a>
+          <a href="/themes/new" class="btn btn-primary btn-sm">+ New Theme</a>
         <% } %>
         <a href="/themes/landing" class="btn btn-ghost btn-sm">← Landing</a>
       </div>
