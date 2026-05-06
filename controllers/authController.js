@@ -14,10 +14,6 @@ const cookieOpts = {
   maxAge: 7 * 24 * 60 * 60 * 1000,
 };
 
-// ─────────────────────────────────────────────
-// LOGIN
-// ─────────────────────────────────────────────
-
 exports.getLogin = (req, res) => {
   if (res.locals.user) return res.redirect('/dashboard');
   res.render('auth/login', { title: 'Login', error: null });
@@ -44,10 +40,6 @@ exports.postLogin = async (req, res) => {
   }
 };
 
-// ─────────────────────────────────────────────
-// REGISTER
-// ─────────────────────────────────────────────
-
 exports.getRegister = (req, res) => {
   if (res.locals.user) return res.redirect('/dashboard');
   res.render('auth/register', { title: 'Register', error: null });
@@ -57,7 +49,6 @@ exports.postRegister = async (req, res) => {
   try {
     const { username, email, password, confirmPassword } = req.body;
 
-    // Check passwords match
     if (password !== confirmPassword) {
       return res.render('auth/register', {
         title: 'Register',
@@ -65,7 +56,6 @@ exports.postRegister = async (req, res) => {
       });
     }
 
-    // Enforce strong password
     const strongPassword =
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()\-_=+\[\]{};':"\\|,.<>\/?]).{8,}$/;
     if (!strongPassword.test(password)) {
@@ -76,7 +66,6 @@ exports.postRegister = async (req, res) => {
       });
     }
 
-    // Check if user exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.render('auth/register', {
@@ -85,14 +74,11 @@ exports.postRegister = async (req, res) => {
       });
     }
 
-    // First user becomes admin
     const count = await User.countDocuments();
     const role = count === 0 ? 'admin' : 'user';
 
-    // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Create user
     const user = await User.create({
       username,
       email,
@@ -115,10 +101,6 @@ exports.postRegister = async (req, res) => {
     });
   }
 };
-
-// ─────────────────────────────────────────────
-// LOGOUT
-// ─────────────────────────────────────────────
 
 exports.logout = (req, res) => {
   res.clearCookie('jwt');

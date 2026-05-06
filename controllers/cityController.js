@@ -2,7 +2,6 @@ const City = require('../models/City');
 const Country = require('../models/Country');
 const User = require('../models/User');
 
-// GET /cities
 exports.getAll = async (req, res) => {
   const { country, search } = req.query;
   let filter = {};
@@ -14,7 +13,6 @@ exports.getAll = async (req, res) => {
     Country.find().sort({ name: 1 }).lean(),
   ]);
 
-  // Mark which cities are in the logged-in user's bucket list
   const me = await User.findById(req.user.id).select('bucketList').lean();
   const bucketIds = (me?.bucketList || []).map((id) => id.toString());
 
@@ -30,7 +28,6 @@ exports.getAll = async (req, res) => {
   });
 };
 
-// GET /cities/new  (admin only)
 exports.getNew = async (req, res) => {
   const countries = await Country.find().sort({ name: 1 }).lean();
   res.render('cities/new', {
@@ -42,7 +39,6 @@ exports.getNew = async (req, res) => {
   });
 };
 
-// POST /cities
 exports.create = async (req, res) => {
   try {
     await City.create(req.body);
@@ -64,7 +60,6 @@ exports.create = async (req, res) => {
   }
 };
 
-// GET /cities/:id
 exports.getOne = async (req, res) => {
   try {
     const city = await City.findById(req.params.id)
@@ -90,7 +85,6 @@ exports.getOne = async (req, res) => {
   }
 };
 
-// GET /cities/:id/edit (admin only)
 exports.getEdit = async (req, res) => {
   try {
     const [city, countries] = await Promise.all([
@@ -111,7 +105,6 @@ exports.getEdit = async (req, res) => {
   }
 };
 
-// PUT /cities/:id
 exports.update = async (req, res) => {
   try {
     await City.findByIdAndUpdate(req.params.id, req.body, {
@@ -139,7 +132,6 @@ exports.update = async (req, res) => {
   }
 };
 
-// DELETE /cities/:id (admin only)
 exports.delete = async (req, res) => {
   try {
     await City.findByIdAndDelete(req.params.id);
@@ -153,19 +145,17 @@ exports.delete = async (req, res) => {
   }
 };
 
-// POST /cities/:id/bucket — toggle bucket list (many-to-many: users ↔ cities)
-// POST /cities/:id/bucket — toggle bucket list (many-to-many: users ↔ cities)
 exports.toggleBucket = async (req, res) => {
   try {
     const uid = req.user.id;
     const cityId = req.params.id;
-    
+
     // Check if city exists
     const city = await City.findById(cityId);
     if (!city) {
       return res.redirect('/cities');
     }
-    
+
     const me = await User.findById(uid).select('bucketList').lean();
     const inList = (me?.bucketList || [])
       .map((id) => id.toString())
@@ -180,7 +170,7 @@ exports.toggleBucket = async (req, res) => {
       await User.findByIdAndUpdate(uid, { $addToSet: { bucketList: cityId } });
       await City.findByIdAndUpdate(cityId, { $addToSet: { visitors: uid } });
     }
-    
+
     // Redirect back to the same page
     res.redirect(`/cities/${cityId}`);
   } catch (err) {

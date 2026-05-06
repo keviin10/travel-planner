@@ -15,7 +15,7 @@ const attachUser = async (req, res, next) => {
     const user = await User.findById(decoded.id).select('-password').lean();
 
     if (user) {
-      user.id = user._id.toString(); // ← always have both .id and ._id
+      user.id = user._id.toString();
     }
 
     req.user = user;

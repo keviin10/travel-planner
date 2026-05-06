@@ -12,7 +12,6 @@ const isOwnerOrAdmin = (trip, user) => {
   );
 };
 
-// GET /trips
 exports.getAll = async (req, res) => {
   try {
     const { status, search } = req.query;
@@ -21,10 +20,8 @@ exports.getAll = async (req, res) => {
     let filter;
 
     if (req.user.role === 'admin') {
-      // admin sees all trips
       filter = {};
     } else {
-      // user sees their own trips + public trips from others
       filter = {
         $or: [{ user: uid }, { isPublic: true }],
       };
